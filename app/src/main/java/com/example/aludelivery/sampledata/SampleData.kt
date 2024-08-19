@@ -21,3 +21,20 @@ val sampleProducts = listOf(
         image = R.drawable.batatafrita
     )
 )
+val bebidas = listOf(
+    Product(
+        name = "Sucos",
+        price = BigDecimal("7.99"),
+        image = R.drawable.bebidas
+    ),
+    Product(
+        name = "Sucos",
+        price = BigDecimal("7.99"),
+        image = R.drawable.bebidas2
+    ),
+    Product(
+        name = "Sucos",
+        price = BigDecimal("7.99"),
+        image = R.drawable.bebidas3
+    )
+)

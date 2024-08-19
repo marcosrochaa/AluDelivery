@@ -1,4 +1,5 @@
 package com.example.aludelivery.ui.screens
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.aludelivery.R
 import com.example.aludelivery.model.Product
+import com.example.aludelivery.sampledata.bebidas
 import com.example.aludelivery.sampledata.sampleProducts
 import com.example.aludelivery.ui.Components.ProductSection
 import java.math.BigDecimal
@@ -28,14 +30,14 @@ fun HomeScreens() {
         ProductSection(
             "Doces", listOf(
                 Product(
-                    name = "chocolate",
+                    name = "Chocolate",
                     price = BigDecimal("5.99"),
-                    image = R.drawable.placeholder
+                    image = R.drawable.chocolate
                 )
             )
         )
-        ProductSection("Bebidas", sampleProducts)
-        Spacer(Modifier)
+        ProductSection("Bebidas", bebidas)
+
     }
 }
 
