@@ -32,13 +32,13 @@ import com.example.aludelivery.model.Product
 import java.math.BigDecimal
 
 @Composable
-fun ProductItem(product: Product) {
+fun ProductItem(product: Product, modifier: Modifier = Modifier) {
     androidx.compose.material.Surface(
         shape = RoundedCornerShape(15.dp),
         elevation = 4.dp
     ) {
         Column(
-            Modifier
+            modifier
                 .heightIn(250.dp, 300.dp)
                 .width(200.dp)
         ) {
@@ -56,7 +56,8 @@ fun ProductItem(product: Product) {
                     )
                     .fillMaxWidth()
             ) {
-                AsyncImage( model = product.image,
+                AsyncImage(
+                    model = product.image,
                     contentDescription = null,
                     Modifier
                         .size(imageSize)
@@ -93,6 +94,6 @@ private fun ProductItemPreview() {
         Product(
             name = LoremIpsum(50).values.first(),
             price = BigDecimal("14,99")
-    )
+        )
     )
 }
