@@ -24,9 +24,9 @@ import java.math.BigDecimal
 fun ProductSection(
     title: String,
     products: List<Product>,
-) {
+){
     Column {
-        Text(
+        Text (
             text = title,
             Modifier.padding(
                 start = 16.dp,

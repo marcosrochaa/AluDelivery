@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import com.example.aludelivery.sampledata.sampleCandies
+import com.example.aludelivery.sampledata.sampleSections
 import com.example.aludelivery.ui.screens.HomeScreens
 import com.example.aludelivery.ui.theme.AluDeliveryTheme
 
@@ -21,7 +23,7 @@ class MainActivity : ComponentActivity() {
 fun APP() {
     AluDeliveryTheme {
         Surface {
-         HomeScreens()
+         HomeScreens(sampleSections)
         }
     }
 }
