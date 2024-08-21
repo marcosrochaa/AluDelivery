@@ -1,5 +1,4 @@
 package com.example.aludelivery.ui.Components
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
