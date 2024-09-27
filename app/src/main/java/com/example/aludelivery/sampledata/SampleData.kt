@@ -10,6 +10,7 @@ val sampleCandies = listOf(
         name = "Chocolate",
         price = BigDecimal("3.99"),
         image = "https://images.pexels.com/photos/65882/chocolate-dark-coffee-confiserie-65882.jpeg",
+        description = LoremIpsum(20).values.first()
     ),
     Product(
         name = "Sorvete",

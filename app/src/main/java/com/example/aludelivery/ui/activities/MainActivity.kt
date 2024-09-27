@@ -1,11 +1,10 @@
-package com.example.aludelivery.ui
+package com.example.aludelivery.ui.activities
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import com.example.aludelivery.sampledata.sampleCandies
 import com.example.aludelivery.sampledata.sampleSections
 import com.example.aludelivery.ui.screens.HomeScreens
 import com.example.aludelivery.ui.theme.AluDeliveryTheme
