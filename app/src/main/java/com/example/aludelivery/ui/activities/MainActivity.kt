@@ -15,14 +15,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.DefaultTintColor
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.aludelivery.dao.ProductDao
+import com.example.aludelivery.sampledata.sampleCandies
+import com.example.aludelivery.sampledata.sampleDrinks
 import com.example.aludelivery.sampledata.sampleSections
 import com.example.aludelivery.ui.screens.HomeScreens
 import com.example.aludelivery.ui.theme.AluDeliveryTheme
 
 class MainActivity : ComponentActivity() {
+
+    private val dao = ProductDao()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -33,13 +38,21 @@ class MainActivity : ComponentActivity() {
                         ProductFormActivity::class.java
                     )
                 )
-            })
+            }) {
+                val sections = mapOf(
+                    "Todos produtos" to dao.products(),
+                    "Promoções" to sampleDrinks + sampleCandies,
+                    "Doces" to sampleCandies,
+                    "Bebidas" to sampleDrinks
+                )
+                HomeScreens(sections = sections)
+            }
         }
     }
 }
 
 @Composable
-fun APP(onFabClick: () -> Unit = {}) {
+fun APP(onFabClick: () -> Unit = {}, content: @Composable () -> Unit = {}) {
     AluDeliveryTheme {
         Surface {
             Scaffold(floatingActionButton = {
@@ -52,7 +65,7 @@ fun APP(onFabClick: () -> Unit = {}) {
             })
             { paddingValues ->
                 Box(modifier = Modifier.padding(paddingValues)) {
-                    HomeScreens(sampleSections)
+                    content()
                 }
             }
         }
@@ -62,8 +75,11 @@ fun APP(onFabClick: () -> Unit = {}) {
 @Preview
 @Composable
 fun APPPreview() {
-    APP()
+    APP{
+        HomeScreens(sections = sampleSections)
+    }
 }
+
 
 
 
