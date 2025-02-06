@@ -75,8 +75,8 @@ fun APP(onFabClick: () -> Unit = {}, content: @Composable () -> Unit = {}) {
 @Preview
 @Composable
 fun APPPreview() {
-    APP{
-        HomeScreens(sections = sampleSections)
+    APP {
+        HomeScreens(sampleSections)
     }
 }
 
