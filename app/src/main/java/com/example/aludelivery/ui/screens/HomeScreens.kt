@@ -79,11 +79,11 @@ fun HomeScreen(products: List<Product>) {
             }
         )
     }
-    HomeScreen(state = state)
+    HomeScreenContent(state = state)
 }
 
 @Composable
-fun HomeScreen(
+fun HomeScreenContent(
     state: HomeScreenUiState = HomeScreenUiState()
 ) {
     Column {
@@ -132,7 +132,7 @@ fun HomeScreen(
 private fun HomeScreenPreview() {
     AluDeliveryTheme {
         Surface {
-            HomeScreen(HomeScreenUiState(sections = sampleSections))
+            HomeScreenContent(HomeScreenUiState(sections = sampleSections))
         }
     }
 }
@@ -142,7 +142,7 @@ private fun HomeScreenPreview() {
 fun HomeScreenWithSearchTextPreview() {
     AluDeliveryTheme {
         Surface {
-            HomeScreen(
+            HomeScreenContent(
                 state = HomeScreenUiState(
                     searchText = "a",
                     sections = sampleSections
