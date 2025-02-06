@@ -1,4 +1,4 @@
-package com.example.aludelivery.ui.Components
+package com.example.aludelivery.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,7 +26,7 @@ fun SearchTextField(
         onValueChange = { newValue ->
             onSearchChange(newValue)
         },
-        Modifier
+        modifier
             .padding(16.dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(100),

@@ -22,9 +22,9 @@ import com.example.aludelivery.sampledata.sampleCandies
 import com.example.aludelivery.sampledata.sampleDrinks
 import com.example.aludelivery.sampledata.sampleProducts
 import com.example.aludelivery.sampledata.sampleSections
-import com.example.aludelivery.ui.Components.CardProductItem
-import com.example.aludelivery.ui.Components.ProductSection
-import com.example.aludelivery.ui.Components.SearchTextField
+import com.example.aludelivery.ui.components.CardProductItem
+import com.example.aludelivery.ui.components.ProductSection
+import com.example.aludelivery.ui.components.SearchTextField
 import com.example.aludelivery.ui.theme.AluDeliveryTheme
 
 class HomeScreenUiState(

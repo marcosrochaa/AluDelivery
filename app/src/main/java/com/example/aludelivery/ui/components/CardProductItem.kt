@@ -1,4 +1,4 @@
-package com.example.aludelivery.ui.Components
+package com.example.aludelivery.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
