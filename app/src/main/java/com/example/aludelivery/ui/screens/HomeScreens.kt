@@ -27,69 +27,45 @@ import com.example.aludelivery.ui.components.ProductSection
 import com.example.aludelivery.ui.components.SearchTextField
 import com.example.aludelivery.ui.theme.AluDeliveryTheme
 
-class HomeScreenUiState(
-    val sections: Map<String, List<Product>> = emptyMap(),
-    val searchedProducts: List<Product> = emptyList(),
-    val searchText: String = "",
-    val onSearchChange: (String) -> Unit = {}
-) {
+class HomeScreenUiState(searchText: String = "") {
+
+    var text by mutableStateOf(searchText)
+        private set
+
+    val searchedProducts get() =
+        if (text.isNotBlank()) {
+            sampleProducts.filter { product ->
+                product.name.contains(
+                    text,
+                    ignoreCase = true,
+                ) ||
+                        product.description?.contains(
+                            text,
+                            ignoreCase = true,
+                        ) ?: false
+            }
+        } else emptyList()
 
     fun isShowSections(): Boolean {
-        return searchText.isBlank()
+        return text.isBlank()
     }
 
-}
-
-@Composable
-fun HomeScreen(products: List<Product>) {
-    val sections = mapOf(
-        "Todos produtos" to products,
-        "Promoções" to sampleDrinks + sampleCandies,
-        "Doces" to sampleCandies,
-        "Bebidas" to sampleDrinks
-    )
-    var text by remember {
-        mutableStateOf("")
+    val onSearchChange: (String) -> Unit = { searchText ->
+        text = searchText
     }
 
-    fun containsInNameOrDescrioption() = { product: Product ->
-        product.name.contains(
-            text,
-            ignoreCase = true,
-        ) || product.description?.contains(
-            text,
-            ignoreCase = true,
-        ) ?: false
-    }
-
-    val searchedProducts = remember(text, products) {
-        if (text.isNotBlank()) {
-            sampleProducts.filter(containsInNameOrDescrioption()) +
-                    products.filter(containsInNameOrDescrioption())
-        } else emptyList()
-    }
-
-    val state = remember(products, text) {
-        HomeScreenUiState(
-            sections = sections,
-            searchedProducts = searchedProducts,
-            searchText = text,
-            onSearchChange = {
-                text = it
-            }
-        )
-    }
-    HomeScreenContent(state = state)
 }
 
 @Composable
 fun HomeScreenContent(
+    sections: Map<String, List<Product>>,
     state: HomeScreenUiState = HomeScreenUiState()
 ) {
     Column {
-        val sections = state.sections
-        val text = state.searchText
-        val searchedProducts = state.searchedProducts
+        val text = state.text
+        val searchedProducts = remember(text) {
+            state.searchedProducts
+        }
         SearchTextField(
             searchText = text,
             onSearchChange = state.onSearchChange,
@@ -130,9 +106,9 @@ fun HomeScreenContent(
 @Preview(showSystemUi = true)
 @Composable
 private fun HomeScreenPreview() {
-    AluDeliveryTheme {
+    AluDeliveryTheme{
         Surface {
-            HomeScreenContent(HomeScreenUiState(sections = sampleSections))
+            HomeScreenContent(sampleSections)
         }
     }
 }
@@ -140,13 +116,11 @@ private fun HomeScreenPreview() {
 @Preview
 @Composable
 fun HomeScreenWithSearchTextPreview() {
-    AluDeliveryTheme {
+    AluDeliveryTheme{
         Surface {
             HomeScreenContent(
-                state = HomeScreenUiState(
-                    searchText = "a",
-                    sections = sampleSections
-                ),
+                sampleSections,
+                state = HomeScreenUiState(searchText = "a"),
             )
         }
     }
