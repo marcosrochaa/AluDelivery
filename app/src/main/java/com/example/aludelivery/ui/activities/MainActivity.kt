@@ -13,13 +13,11 @@ import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.aludelivery.dao.ProductDao
-import com.example.aludelivery.sampledata.sampleCandies
-import com.example.aludelivery.sampledata.sampleDrinks
 import com.example.aludelivery.sampledata.sampleSections
+import com.example.aludelivery.ui.screens.HomeScreen
 import com.example.aludelivery.ui.screens.HomeScreenContent
 import com.example.aludelivery.ui.screens.HomeScreenUiState
 import com.example.aludelivery.ui.theme.AluDeliveryTheme
@@ -39,16 +37,8 @@ class MainActivity : ComponentActivity() {
                     )
                 )
             }) {
-                val sections = mapOf(
-                    "Todos produtos" to dao.products(),
-                    "Promoções" to sampleDrinks + sampleCandies,
-                    "Doces" to sampleCandies,
-                    "Bebidas" to sampleDrinks
-                )
-                val state = remember {
-                    HomeScreenUiState()
-                }
-                HomeScreenContent(sections = sections, state = state)
+                val products = dao.products()
+                HomeScreen(products = products)
             }
         }
     }
@@ -78,7 +68,7 @@ fun App(
 @Composable
 fun AppPreview() {
     App {
-        HomeScreenContent(sections = sampleSections)
+        HomeScreenContent(HomeScreenUiState(sections = sampleSections))
     }
 }
 

@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.aludelivery.model.Product
+import com.example.aludelivery.sampledata.sampleCandies
+import com.example.aludelivery.sampledata.sampleDrinks
 import com.example.aludelivery.sampledata.sampleProducts
 import com.example.aludelivery.sampledata.sampleSections
 import com.example.aludelivery.ui.components.CardProductItem
@@ -25,45 +27,71 @@ import com.example.aludelivery.ui.components.ProductSection
 import com.example.aludelivery.ui.components.SearchTextField
 import com.example.aludelivery.ui.theme.AluDeliveryTheme
 
-class HomeScreenUiState(searchText: String = "") {
-
-    var text by mutableStateOf(searchText)
-        private set
-
-    val searchedProducts get() =
-        if (text.isNotBlank()) {
-            sampleProducts.filter { product ->
-                product.name.contains(
-                    text,
-                    ignoreCase = true,
-                ) ||
-                        product.description?.contains(
-                            text,
-                            ignoreCase = true,
-                        ) ?: false
-            }
-        } else emptyList()
+class HomeScreenUiState(
+    val sections: Map<String, List<Product>> = emptyMap(),
+    val searchedProducts: List<Product> = emptyList(),
+    val searchText: String = "",
+    val onSearchChange: (String) -> Unit = {}
+) {
 
     fun isShowSections(): Boolean {
-        return text.isBlank()
+        return searchText.isBlank()
+    }
+}
+
+@Composable
+fun HomeScreen(products: List<Product>) {
+    val sections = mapOf(
+        "Todos produtos" to products,
+        "Promoções" to sampleDrinks + sampleCandies,
+        "Doces" to sampleCandies,
+        "Bebidas" to sampleDrinks
+    )
+
+    var text by remember {
+        mutableStateOf("")
     }
 
-    val onSearchChange: (String) -> Unit = { searchText ->
-        text = searchText
+    fun containsNameOrDescription() = { product: Product ->
+        product.name.contains(
+            text,
+            ignoreCase = true,
+        ) ||
+                product.description?.contains(
+                    text,
+                    ignoreCase = true,
+                ) ?: false
     }
 
+    val searchedProducts = remember(text, products) {
+        if (text.isNotBlank()) {
+            sampleProducts.filter(containsNameOrDescription()) +
+                    products.filter(containsNameOrDescription())
+        } else emptyList()
+    }
+
+    val state = remember(products, text) {
+        HomeScreenUiState(
+            sections = sections,
+            searchedProducts = searchedProducts,
+            searchText = text,
+            onSearchChange = {
+                text = it
+            }
+        )
+    }
+    HomeScreenContent(state = state)
 }
 
 @Composable
 fun HomeScreenContent(
-    sections: Map<String, List<Product>>,
     state: HomeScreenUiState = HomeScreenUiState()
 ) {
     Column {
-        val text = state.text
-        val searchedProducts = remember(text) {
-            state.searchedProducts
-        }
+        val sections = state.sections
+        val text = state.searchText
+        val searchedProducts = state.searchedProducts
+
         SearchTextField(
             searchText = text,
             onSearchChange = state.onSearchChange,
@@ -104,9 +132,9 @@ fun HomeScreenContent(
 @Preview(showSystemUi = true)
 @Composable
 private fun HomeScreenPreview() {
-    AluDeliveryTheme{
+    AluDeliveryTheme {
         Surface {
-            HomeScreenContent(sampleSections)
+            HomeScreenContent(HomeScreenUiState(sections = sampleSections))
         }
     }
 }
@@ -114,11 +142,13 @@ private fun HomeScreenPreview() {
 @Preview
 @Composable
 fun HomeScreenWithSearchTextPreview() {
-    AluDeliveryTheme{
+    AluDeliveryTheme {
         Surface {
             HomeScreenContent(
-                sampleSections,
-                state = HomeScreenUiState(searchText = "a"),
+                state = HomeScreenUiState(
+                    searchText = "a",
+                    sections = sampleSections
+                ),
             )
         }
     }
