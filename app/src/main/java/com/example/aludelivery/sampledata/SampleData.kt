@@ -1,7 +1,6 @@
 package com.example.aludelivery.sampledata
 
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
-import com.example.aludelivery.R
 import com.example.aludelivery.model.Product
 import java.math.BigDecimal
 

@@ -4,10 +4,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Surface
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,78 +18,97 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.aludelivery.model.Product
+import com.example.aludelivery.sampledata.sampleCandies
+import com.example.aludelivery.sampledata.sampleDrinks
 import com.example.aludelivery.sampledata.sampleProducts
 import com.example.aludelivery.sampledata.sampleSections
-import com.example.aludelivery.ui.Components.CardProductItem
-import com.example.aludelivery.ui.Components.ProductSection
-import com.example.aludelivery.ui.Components.SearcheTextField
+import com.example.aludelivery.ui.components.CardProductItem
+import com.example.aludelivery.ui.components.ProductSection
+import com.example.aludelivery.ui.components.SearchTextField
 import com.example.aludelivery.ui.theme.AluDeliveryTheme
 
+class HomeScreenUiState(searchText: String = "") {
+
+    var text by mutableStateOf(searchText)
+        private set
+
+    val searchedProducts get() =
+        if (text.isNotBlank()) {
+            sampleProducts.filter { product ->
+                product.name.contains(
+                    text,
+                    ignoreCase = true,
+                ) ||
+                        product.description?.contains(
+                            text,
+                            ignoreCase = true,
+                        ) ?: false
+            }
+        } else emptyList()
+
+    fun isShowSections(): Boolean {
+        return text.isBlank()
+    }
+
+    val onSearchChange: (String) -> Unit = { searchText ->
+        text = searchText
+    }
+
+}
+
 @Composable
-fun HomeScreens(
+fun HomeScreenContent(
     sections: Map<String, List<Product>>,
-    searchText: String = ""
-
-
+    state: HomeScreenUiState = HomeScreenUiState()
 ) {
     Column {
-        var text by remember { mutableStateOf(searchText) }
-
-        SearcheTextField(searchText = text,
-            OnsearchTextChange = {
-                text = it
-            },
-            )
-
-
-//Se o houver recomposição o código só executa de novo se o texto mudar
-        val searchedProduct = remember(text) {
-            if (text.isNotBlank()) {
-                sampleProducts.filter { product ->
-                    product.name.contains(text, ignoreCase = true) ||
-                            product.description?.contains(text, ignoreCase = true) ?: false
-                }
-            } else emptyList()
+        val text = state.text
+        val searchedProducts = remember(text) {
+            state.searchedProducts
         }
+        SearchTextField(
+            searchText = text,
+            onSearchChange = state.onSearchChange,
+            Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+        )
 
         LazyColumn(
-            Modifier.fillMaxSize(),
+            Modifier
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(bottom = 16.dp)
-
         ) {
-            if (text.isBlank()) {
+            if (state.isShowSections()) {
                 for (section in sections) {
                     val title = section.key
                     val products = section.value
                     item {
                         ProductSection(
-                            title = title, products = products
+                            title = title,
+                            products = products
                         )
                     }
                 }
-
             } else {
-                items(searchedProduct) { product ->
+                items(searchedProducts) { p ->
                     CardProductItem(
-                        product = product,
+                        product = p,
                         Modifier.padding(horizontal = 16.dp),
                     )
                 }
-
-
             }
         }
     }
 }
 
-
 @Preview(showSystemUi = true)
 @Composable
 private fun HomeScreenPreview() {
-    AluDeliveryTheme {
+    AluDeliveryTheme{
         Surface {
-            HomeScreens(sampleSections)
+            HomeScreenContent(sampleSections)
         }
     }
 }
@@ -96,11 +116,11 @@ private fun HomeScreenPreview() {
 @Preview
 @Composable
 fun HomeScreenWithSearchTextPreview() {
-    AluDeliveryTheme {
+    AluDeliveryTheme{
         Surface {
-            HomeScreens(
+            HomeScreenContent(
                 sampleSections,
-                searchText = "pizza",
+                state = HomeScreenUiState(searchText = "a"),
             )
         }
     }

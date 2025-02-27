@@ -200,7 +200,8 @@ class ProductFormActivity : ComponentActivity() {
                     )
                     Log.i(
                         "ProductFormActivity",
-                        "ProductFormScreen : $productForm ")
+                        "ProductFormScreen : $productForm "
+                    )
                     onSaveClick(productForm)
                 },
                 Modifier.fillMaxWidth(),

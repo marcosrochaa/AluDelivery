@@ -1,4 +1,5 @@
-package com.example.aludelivery.ui.Components
+package com.example.aludelivery.ui.components
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -95,13 +96,13 @@ fun ProductItem(product: Product, modifier: Modifier = Modifier) {
 @Composable
 private fun ProductItemPreview() {
     AluDeliveryTheme {
-            Surface {
-                ProductItem(
-                    Product(
-                        name = LoremIpsum(50).values.first(),
-                        price = BigDecimal("14.99")
-                    )
+        Surface {
+            ProductItem(
+                Product(
+                    name = LoremIpsum(50).values.first(),
+                    price = BigDecimal("14.99")
                 )
-            }
+            )
         }
     }
+}
