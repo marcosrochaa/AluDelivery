@@ -13,12 +13,17 @@ import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.aludelivery.dao.ProductDao
+import com.example.aludelivery.model.Product
 import com.example.aludelivery.sampledata.sampleCandies
 import com.example.aludelivery.sampledata.sampleDrinks
+import com.example.aludelivery.sampledata.sampleProducts
 import com.example.aludelivery.sampledata.sampleSections
 import com.example.aludelivery.ui.screens.HomeScreenContent
 import com.example.aludelivery.ui.screens.HomeScreenUiState
@@ -39,16 +44,46 @@ class MainActivity : ComponentActivity() {
                     )
                 )
             }) {
+                val products = dao.products()
                 val sections = mapOf(
-                    "Todos produtos" to dao.products(),
+                    "Todos produtos" to products,
                     "Promoções" to sampleDrinks + sampleCandies,
                     "Doces" to sampleCandies,
                     "Bebidas" to sampleDrinks
                 )
-                val state = remember {
-                    HomeScreenUiState()
+                var text by remember {
+                    mutableStateOf("")
                 }
-                HomeScreenContent(sections = sections, state = state)
+
+                fun containsNameOrDescription() = { product: Product ->
+                    product.name.contains(
+                        text,
+                        ignoreCase = true,
+                    ) ||
+                            product.description?.contains(
+                                text,
+                                ignoreCase = true,
+                            ) ?: false
+                }
+
+                val searchedProducts = remember(text, products) {
+                    if (text.isNotBlank()) {
+                        sampleProducts.filter(containsNameOrDescription()) +
+                                products.filter(containsNameOrDescription())
+                    } else emptyList()
+                }
+
+                val state = remember(products, text) {
+                    HomeScreenUiState(
+                        sections = sections,
+                        searchedProducts = searchedProducts,
+                        searchText = text,
+                        onSearchChange = {
+                            text = it
+                        }
+                    )
+                }
+                HomeScreenContent(state = state)
             }
         }
     }
@@ -78,7 +113,7 @@ fun App(
 @Composable
 fun AppPreview() {
     App {
-        HomeScreenContent(sections = sampleSections)
+        HomeScreenContent(HomeScreenUiState(sections = sampleSections))
     }
 }
 

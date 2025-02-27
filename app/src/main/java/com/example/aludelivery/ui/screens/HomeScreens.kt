@@ -10,60 +10,37 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.aludelivery.model.Product
-import com.example.aludelivery.sampledata.sampleProducts
 import com.example.aludelivery.sampledata.sampleSections
 import com.example.aludelivery.ui.components.CardProductItem
 import com.example.aludelivery.ui.components.ProductSection
 import com.example.aludelivery.ui.components.SearchTextField
 import com.example.aludelivery.ui.theme.AluDeliveryTheme
 
-class HomeScreenUiState(searchText: String = "") {
-
-    var text by mutableStateOf(searchText)
-        private set
-
-    val searchedProducts get() =
-        if (text.isNotBlank()) {
-            sampleProducts.filter { product ->
-                product.name.contains(
-                    text,
-                    ignoreCase = true,
-                ) ||
-                        product.description?.contains(
-                            text,
-                            ignoreCase = true,
-                        ) ?: false
-            }
-        } else emptyList()
+class HomeScreenUiState(
+    val sections: Map<String, List<Product>> = emptyMap(),
+    val searchedProducts: List<Product> = emptyList(),
+    val searchText: String = "",
+    val onSearchChange: (String) -> Unit = {}
+) {
 
     fun isShowSections(): Boolean {
-        return text.isBlank()
+        return searchText.isBlank()
     }
-
-    val onSearchChange: (String) -> Unit = { searchText ->
-        text = searchText
-    }
-
 }
 
 @Composable
 fun HomeScreenContent(
-    sections: Map<String, List<Product>>,
     state: HomeScreenUiState = HomeScreenUiState()
 ) {
     Column {
-        val text = state.text
-        val searchedProducts = remember(text) {
-            state.searchedProducts
-        }
+        val sections = state.sections
+        val text = state.searchText
+        val searchedProducts = state.searchedProducts
+
         SearchTextField(
             searchText = text,
             onSearchChange = state.onSearchChange,
@@ -104,9 +81,9 @@ fun HomeScreenContent(
 @Preview(showSystemUi = true)
 @Composable
 private fun HomeScreenPreview() {
-    AluDeliveryTheme{
+    AluDeliveryTheme {
         Surface {
-            HomeScreenContent(sampleSections)
+            HomeScreenContent(HomeScreenUiState(sections = sampleSections))
         }
     }
 }
@@ -114,11 +91,13 @@ private fun HomeScreenPreview() {
 @Preview
 @Composable
 fun HomeScreenWithSearchTextPreview() {
-    AluDeliveryTheme{
+    AluDeliveryTheme {
         Surface {
             HomeScreenContent(
-                sampleSections,
-                state = HomeScreenUiState(searchText = "a"),
+                state = HomeScreenUiState(
+                    searchText = "a",
+                    sections = sampleSections
+                ),
             )
         }
     }
